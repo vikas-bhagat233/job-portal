@@ -76,7 +76,7 @@ export const markApplicationViewed = async (req, res) => {
     if (!app) return res.status(404).json({ message: 'Application not found' });
     if (String(app.job.recruiter) !== String(req.user._id)) return res.status(403).json({ message: 'Forbidden' });
     // Preserve final decisions; otherwise mark as viewed
-    if (app.status !== 'rejected' && app.status !== 'shortlisted') {
+    if (app.status !== 'rejected' && app.status !== 'hired') {
       app.status = 'viewed';
     }
     app.viewedAt = new Date();
@@ -98,20 +98,11 @@ export const updateApplicationStatus = async (req, res) => {
     const app = await Application.findById(req.params.appId).populate('job', 'recruiter');
     if (!app) return res.status(404).json({ message: 'Application not found' });
     if (String(app.job.recruiter) !== String(req.user._id)) return res.status(403).json({ message: 'Forbidden' });
-    // Enforce one-time decision: if already decided, block further changes
-    if (['rejected', 'shortlisted', 'hired'].includes(app.status)) {
+    // Enforce one-time decision: final decisions cannot change
+    if (['rejected', 'hired'].includes(app.status)) {
       return res.status(400).json({ message: 'Decision already made and cannot be changed' });
     }
-    // Handle hiring with seats decrement
-    if (status === 'hired') {
-      const updatedJob = await Job.findOneAndUpdate(
-        { _id: app.job, $or: [ { seats: { $exists: false } }, { seats: null }, { remainingSeats: { $gt: 0 } } ] },
-        { $inc: { remainingSeats: { $cond: [ { $and: [ { $ne: [ '$seats', null ] }, { $ne: [ '$seats', undefined ] } ] }, -1, 0 ] } } },
-        { new: true }
-      );
-      // The above $cond is not supported in update; fallback to JS logic
-    }
-    // Fallback JS logic for decrement due to MongoDB update limitations
+    // Handle hiring with seats decrement (JS logic to keep compatibility across Mongo versions)
     if (status === 'hired') {
       const job = await Job.findById(app.job).select('seats remainingSeats status recruiter');
       if (!job) return res.status(404).json({ message: 'Job not found' });

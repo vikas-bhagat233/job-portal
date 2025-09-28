@@ -75,10 +75,10 @@ export default function JobApplications() {
               )}
               <div className='muted' style={{ fontSize: 12, marginTop: 6 }}>{new Date(a.createdAt).toLocaleString()}</div>
               <div style={{ marginTop: 12, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <button className='btn' onClick={() => markViewed(a._id)} disabled={['rejected','shortlisted','hired'].includes(a.status)}>Mark Viewed</button>
-                <button className='btn btn-danger' onClick={() => updateStatus(a._id, 'rejected')} disabled={['rejected','shortlisted','hired'].includes(a.status)}>Reject</button>
-                <button className='btn' onClick={() => updateStatus(a._id, 'shortlisted')} disabled={['rejected','shortlisted','hired'].includes(a.status)}>Shortlist</button>
-                <button className='btn btn-primary' onClick={() => updateStatus(a._id, 'hired')} disabled={['rejected','shortlisted','hired'].includes(a.status)}>Hire</button>
+                <button className='btn' onClick={() => markViewed(a._id)} disabled={['rejected','hired'].includes(a.status)}>Mark Viewed</button>
+                <button className='btn btn-danger' onClick={() => updateStatus(a._id, 'rejected')} disabled={['rejected','hired'].includes(a.status)}>Reject</button>
+                <button className='btn' onClick={() => updateStatus(a._id, 'shortlisted')} disabled={['rejected','hired'].includes(a.status)}>Shortlist</button>
+                <button className='btn btn-primary' onClick={() => updateStatus(a._id, 'hired')} disabled={['rejected','hired'].includes(a.status)}>Hire</button>
               </div>
             </div>
           ))
