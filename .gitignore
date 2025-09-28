@@ -1,0 +1,37 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node modules
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Build outputs
+dist/
+build/
+frontend/build/
+backend/build/
+
+# Coverage
+coverage/
+
+# Environment variables (DO NOT COMMIT SECRETS)
+.env
+*.env
+backend/.env
+frontend/.env
+
+# Local data/uploads (keep folder with .gitkeep)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Editor/OS
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
