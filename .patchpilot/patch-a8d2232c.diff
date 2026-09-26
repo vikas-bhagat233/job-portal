@@ -1,0 +1,14 @@
+--- a/models/Job.js
++++ b/models/Job.js
+@@ -10,6 +10,11 @@ const jobSchema = new mongoose.Schema({
+   remainingSeats: { type: Number, min: 0 }
+ }, { timestamps: true });
+ 
++jobSchema.pre('save', function(next) {
++  if (this.isNew && this.seats && !this.remainingSeats) {
++    this.remainingSeats = this.seats;
++  }
++  next();
++});
+ 
+ export default mongoose.model("Job", jobSchema);
